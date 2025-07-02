@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>複製按鈕清單</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .item {
+      margin-bottom: 8px;
+    }
+    button {
+      margin-left: 10px;
+      padding: 3px 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📋 點按即可複製</h2>
+
+<div id="list">
+  <div class="item"><span>1头衔 name 女王</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 将军</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 首相</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 参谋</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 典狱长</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 祭司</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 军需官</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 建筑师</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>头衔 name 大学士</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>头衔 name 懦夫</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 小人</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 小丑</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 奴隶</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 奸细</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 重刑犯</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 脏鬼</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 懒人</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1头衔 name 傻瓜</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1余额</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1石 1k</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1铁 1k</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1木 1k</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1金 1k</span><button onclick="copyText(this)">複製</button></div>
+  <div class="item"><span>1米 1k</span><button onclick="copyText(this)">複製</button></div>
+</div>
+
+<script>
+  function copyText(button) {
+    const text = button.previousElementSibling.innerText;
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        button.innerText = "✅ 已複製";
+        setTimeout(() => button.innerText = "複製", 1000);
+      })
+      .catch(err => alert("❌ 複製失敗：" + err));
+  }
+</script>
+
+</body>
+</html>
