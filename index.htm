@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>复制简体文字</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .line {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .text {
+      margin-right: 10px;
+      white-space: pre;
+    }
+    button {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2>点击按钮复制简体文字</h2>
+
+<div id="content">
+  <!-- 每一行文字和按鈕 -->
+</div>
+
+<script>
+  const lines = [
+    "1头衔 name 王后",
+    "1头衔 name 将军",
+    "1头衔 name 首相",
+    "1头衔 name 参谋",
+    "1头衔 name 典狱长",
+    "1头衔 name 祭司",
+    "1头衔 name 军需官",
+    "1头衔 name 建筑师",
+    "1头衔 name 大学士",
+    "1头衔 name 懦夫",
+    "1头衔 name 小人",
+    "1头衔 name 小丑",
+    "1头衔 name 奴隶",
+    "1头衔 name 奸细",
+    "1头衔 name 重刑犯",
+    "1头衔 name 脏鬼",
+    "1头衔 name 懒人",
+    "1头衔 name 傻瓜",
+    "1余额",
+    "1石 1k",
+    "1铁 1k",
+    "1木 1k",
+    "1金 1k",
+    "1米 1k"
+  ];
+
+  const contentDiv = document.getElementById('content');
+
+  lines.forEach(line => {
+    const div = document.createElement('div');
+    div.className = 'line';
+
+    const span = document.createElement('span');
+    span.className = 'text';
+    span.textContent = line;
+
+    const button = document.createElement('button');
+    button.textContent = '复制';
+    button.onclick = () => {
+      navigator.clipboard.writeText(line)
+        .then(() => alert(`已复制: ${line}`))
+        .catch(err => alert('复制失败'));
+    };
+
+    div.appendChild(span);
+    div.appendChild(button);
+    contentDiv.appendChild(div);
+  });
+</script>
+
+</body>
+</html>
