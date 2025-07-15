@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8" />
-  <title>复制简体文字（替代 name，保留输入）</title>
+  <title>即時替換 name 並可複製</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,7 +16,6 @@
     .text {
       margin-right: 10px;
       white-space: pre;
-      flex: 1;
     }
     button {
       cursor: pointer;
@@ -30,8 +29,6 @@
   </style>
 </head>
 <body>
-
-<h2>输入名字，复制时替换 "name"，并保存输入内容</h2>
 
 <label for="nameInput">输入名字：</label>
 <input type="text" id="nameInput" />
@@ -71,53 +68,57 @@
   const contentDiv = document.getElementById('content');
   const nameInput = document.getElementById('nameInput');
 
-  // 頁面載入時從 localStorage 讀取存的名字
-  const savedName = localStorage.getItem(STORAGE_KEY);
-  if (savedName) {
-    nameInput.value = savedName;
-  }
-
-  // 輸入框改變時儲存
-  nameInput.addEventListener('input', () => {
-    localStorage.setItem(STORAGE_KEY, nameInput.value);
-  });
-
-  lines.forEach(line => {
+  // 建立每一行的顯示元素與複製按鈕
+  const lineElements = lines.map(originalLine => {
     const div = document.createElement('div');
     div.className = 'line';
 
     const span = document.createElement('span');
     span.className = 'text';
-    span.textContent = line;
+    span.dataset.original = originalLine;
+    span.textContent = originalLine;
 
     const button = document.createElement('button');
     button.textContent = '复制';
-    button.setAttribute('aria-label', `复制文本: ${line}`);
-
     button.onclick = () => {
-      const inputVal = nameInput.value.trim();
-      const safeName = inputVal.replace(/\s+/g, '_');
-
-      let textToCopy = line;
-
-      if (line.includes('name')) {
-        if (safeName) {
-          textToCopy = line.replace(/\bname\b/g, safeName);
-        }
-      }
-
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(textToCopy)
-          .then(() => alert(`已复制: ${textToCopy}`))
-          .catch(() => alert('复制失败'));
-      } else {
-        alert('当前浏览器不支持剪贴板API');
-      }
+      const textToCopy = span.textContent;
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => alert(`已复制: ${textToCopy}`))
+        .catch(() => alert('复制失败'));
     };
 
     div.appendChild(span);
     div.appendChild(button);
     contentDiv.appendChild(div);
+
+    return span;
+  });
+
+  // 即時更新顯示文字
+  function updateLines(name) {
+    const safeName = name.trim().replace(/\s+/g, '_');
+    lineElements.forEach(span => {
+      const original = span.dataset.original;
+      if (original.includes('name') && safeName) {
+        span.textContent = original.replace(/\bname\b/g, safeName);
+      } else {
+        span.textContent = original;
+      }
+    });
+  }
+
+  // 初次載入，套用 localStorage 的名字
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    nameInput.value = saved;
+    updateLines(saved);
+  }
+
+  // 每次輸入更新顯示與儲存
+  nameInput.addEventListener('input', e => {
+    const name = e.target.value;
+    localStorage.setItem(STORAGE_KEY, name);
+    updateLines(name);
   });
 </script>
 
