@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8" />
-  <title>复制简体文字（动态替换name）</title>
+  <title>复制简体文字（替代 name，保留输入）</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -31,7 +31,7 @@
 </head>
 <body>
 
-<h2>输入名字，复制时替换 "name"</h2>
+<h2>输入名字，复制时替换 "name"，并保存输入内容</h2>
 
 <label for="nameInput">请输入名字：</label>
 <input type="text" id="nameInput" placeholder="输入名字，空格自动变下划线" />
@@ -39,6 +39,8 @@
 <div id="content"></div>
 
 <script>
+  const STORAGE_KEY = 'savedName';
+
   const lines = [
     "1头衔 name 王后",
     "1头衔 name 将军",
@@ -67,6 +69,18 @@
   ];
 
   const contentDiv = document.getElementById('content');
+  const nameInput = document.getElementById('nameInput');
+
+  // 頁面載入時從 localStorage 讀取存的名字
+  const savedName = localStorage.getItem(STORAGE_KEY);
+  if (savedName) {
+    nameInput.value = savedName;
+  }
+
+  // 輸入框改變時儲存
+  nameInput.addEventListener('input', () => {
+    localStorage.setItem(STORAGE_KEY, nameInput.value);
+  });
 
   lines.forEach(line => {
     const div = document.createElement('div');
@@ -81,19 +95,15 @@
     button.setAttribute('aria-label', `复制文本: ${line}`);
 
     button.onclick = () => {
-      const nameInput = document.getElementById('nameInput').value.trim();
-      // 將空格替換成底線
-      const safeName = nameInput.replace(/\s+/g, '_');
+      const inputVal = nameInput.value.trim();
+      const safeName = inputVal.replace(/\s+/g, '_');
 
       let textToCopy = line;
 
-      // 如果該行包含 "name"，就替換它
       if (line.includes('name')) {
-        // 用正則替換 "name" 後面的詞
-        // 假設格式是：前面 + "name" + 空白 + 某字詞
-        // 把那個字詞替換成 safeName
-        textToCopy = line.replace(/name\s+\S+/, `name ${safeName || 'name'}`);
-        // 如果輸入空字串，則不替換，保留原字串 "name"
+        if (safeName) {
+          textToCopy = line.replace(/\bname\b/g, safeName);
+        }
       }
 
       if (navigator.clipboard) {
