@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <title>复制简体文字</title>
+  <meta charset="UTF-8" />
+  <title>复制简体文字（动态替换name）</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,19 +16,27 @@
     .text {
       margin-right: 10px;
       white-space: pre;
+      flex: 1;
     }
     button {
       cursor: pointer;
+    }
+    #nameInput {
+      margin-bottom: 20px;
+      padding: 6px 10px;
+      font-size: 16px;
+      width: 200px;
     }
   </style>
 </head>
 <body>
 
-<h2>点击按钮复制简体文字</h2>
+<h2>输入名字，复制时替换 "name"</h2>
 
-<div id="content">
-  <!-- 每一行文字和按鈕 -->
-</div>
+<label for="nameInput">请输入名字：</label>
+<input type="text" id="nameInput" placeholder="输入名字，空格自动变下划线" />
+
+<div id="content"></div>
 
 <script>
   const lines = [
@@ -70,10 +78,31 @@
 
     const button = document.createElement('button');
     button.textContent = '复制';
+    button.setAttribute('aria-label', `复制文本: ${line}`);
+
     button.onclick = () => {
-      navigator.clipboard.writeText(line)
-        .then(() => alert(`已复制: ${line}`))
-        .catch(err => alert('复制失败'));
+      const nameInput = document.getElementById('nameInput').value.trim();
+      // 將空格替換成底線
+      const safeName = nameInput.replace(/\s+/g, '_');
+
+      let textToCopy = line;
+
+      // 如果該行包含 "name"，就替換它
+      if (line.includes('name')) {
+        // 用正則替換 "name" 後面的詞
+        // 假設格式是：前面 + "name" + 空白 + 某字詞
+        // 把那個字詞替換成 safeName
+        textToCopy = line.replace(/name\s+\S+/, `name ${safeName || 'name'}`);
+        // 如果輸入空字串，則不替換，保留原字串 "name"
+      }
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => alert(`已复制: ${textToCopy}`))
+          .catch(() => alert('复制失败'));
+      } else {
+        alert('当前浏览器不支持剪贴板API');
+      }
     };
 
     div.appendChild(span);
